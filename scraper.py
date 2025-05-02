@@ -1,0 +1,92 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+import time
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+def send_email(subject, body):
+
+    recipient_email = "ansh.gupta0512@gmail.com"
+
+    from_email = "akshatnintendo22@gmail.com"
+    password = "jsfi sofb xtri erwk"           # app password
+
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)  # Use 465 for SSL or 587 for TLS
+        server.starttls()  # Start TLS encryption
+
+        server.login(from_email, password)
+
+        text = msg.as_string()
+        server.sendmail(from_email, recipient_email, text)
+
+        print(f"Email sent to {recipient_email}")
+    except Exception as e:
+        print(f"Failed to send email: {str(e)}")
+    finally:
+        server.quit()
+
+service = Service(executable_path="C:\\Users\\akshagupta\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe")
+options = Options()
+options.add_argument("--headless=new")
+options.add_argument("--disable-gpu")
+options.add_argument("--no-sandbox")
+options.add_argument("--window-size=1920,1080")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...")
+
+driver = webdriver.Chrome(service=service, options=options)
+
+product_url = "https://shop.amul.com/en/product/amul-high-protein-paneer-400-g-or-pack-of-2"
+driver.get(product_url)
+
+wait = WebDriverWait(driver, 10)
+
+input_box = wait.until(EC.visibility_of_element_located((By.ID, "search")))
+input_box.clear()
+input_box.send_keys("500075")
+
+first_result = wait.until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, '#automatic .searchitem-name'))
+)
+first_result.click()
+
+add_to_cart_button = wait.until(
+    EC.visibility_of_element_located((By.CSS_SELECTOR, 'a.add-to-cart'))
+)
+
+is_sold_out = True
+error = ""
+try:
+    sold_out_element = wait.until(
+        lambda driver: driver.find_element(By.CSS_SELECTOR, 'div.alert.alert-danger.mt-3') 
+                      and driver.find_element(By.CSS_SELECTOR, 'div.alert.alert-danger.mt-3').text == "Sold Out"
+    )
+    is_sold_out = True
+except TimeoutException:
+    is_sold_out = False
+except Exception as e:
+    error = str(e)
+
+if not is_sold_out:
+    if error != "":
+        body = error
+        subject = "Amul script error"
+    else:
+        body = product_url
+        subject = "Amul Product Available Alert"
+    send_email(subject, body)
+
+driver.quit()
