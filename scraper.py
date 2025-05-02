@@ -9,6 +9,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
+from webdriver_manager.chrome import ChromeDriverManager
 
 def send_email(subject, body):
 
@@ -38,7 +39,8 @@ def send_email(subject, body):
     finally:
         server.quit()
 
-service = Service(executable_path="C:\\Users\\akshagupta\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe")
+print("Installing ChromeDriver...")
+service = Service(ChromeDriverManager().install())
 options = Options()
 options.add_argument("--headless=new")
 options.add_argument("--disable-gpu")
@@ -47,6 +49,7 @@ options.add_argument("--window-size=1920,1080")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...")
 
+print("Starting scrape.")
 driver = webdriver.Chrome(service=service, options=options)
 
 product_url = "https://shop.amul.com/en/product/amul-high-protein-paneer-400-g-or-pack-of-2"
@@ -81,6 +84,7 @@ except Exception as e:
     error = str(e)
 
 if not is_sold_out:
+    print("Sending email.")
     if error != "":
         body = error
         subject = "Amul script error"
