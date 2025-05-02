@@ -2,7 +2,7 @@ name: Run Amul Product Checker
 
 on:
   schedule:
-    - cron: '*/30 * * * *'   # Every 30 minutes
+    - cron: ${{ vars.RUN_FREQUENCY }}
   workflow_dispatch:         # Manual trigger button
 
 jobs:
