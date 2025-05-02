@@ -70,20 +70,21 @@ add_to_cart_button = wait.until(
     EC.visibility_of_element_located((By.CSS_SELECTOR, 'a.add-to-cart'))
 )
 
-is_sold_out = True
+should_send_mail = False
 error = ""
 try:
     sold_out_element = wait.until(
         lambda driver: driver.find_element(By.CSS_SELECTOR, 'div.alert.alert-danger.mt-3') 
                       and driver.find_element(By.CSS_SELECTOR, 'div.alert.alert-danger.mt-3').text == "Sold Out"
     )
-    is_sold_out = True
+    should_send_mail = False
 except TimeoutException:
-    is_sold_out = False
+    should_send_mail = True
 except Exception as e:
+    should_send_mail = True
     error = str(e)
 
-if not is_sold_out:
+if should_send_mail:
     print("Sending email.")
     if error != "":
         body = error
