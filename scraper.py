@@ -52,7 +52,7 @@ options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...")
 print("Starting scrape.")
 driver = webdriver.Chrome(service=service, options=options)
 
-product_url = "https://shop.amul.com/en/product/amul-high-protein-paneer-400-g-or-pack-of-2"
+product_url = os.getenv("PRODUCT_URL")
 driver.get(product_url)
 
 wait = WebDriverWait(driver, 10)
