@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -9,13 +8,14 @@ from selenium.common.exceptions import TimeoutException
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import os
 
 def send_email(subject, body):
 
-    recipient_email = "ansh.gupta0512@gmail.com"
+    recipient_email = os.getenv("TO_EMAIL_USER")
 
-    from_email = "akshatnintendo22@gmail.com"
-    password = "jsfi sofb xtri erwk"           # app password
+    from_email = os.getenv("EMAIL_USER")
+    password = os.getenv("EMAIL_PASS")
 
     msg = MIMEMultipart()
     msg['From'] = from_email
