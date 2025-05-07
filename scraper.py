@@ -57,9 +57,11 @@ driver.get(product_url)
 
 wait = WebDriverWait(driver, 10)
 
+pincode = os.getenv("PINCODE")
+
 input_box = wait.until(EC.visibility_of_element_located((By.ID, "search")))
 input_box.clear()
-input_box.send_keys("500075")
+input_box.send_keys(pincode)
 
 first_result = wait.until(
     EC.element_to_be_clickable((By.CSS_SELECTOR, '#automatic .searchitem-name'))

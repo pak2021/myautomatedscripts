@@ -30,3 +30,4 @@ jobs:
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           TO_EMAIL_USER: ${{ secrets.TO_EMAIL_USER }}
           PRODUCT_URL: ${{ vars.PRODUCT_URL }}
+          PINCODE: ${{ secrets.PINCODE }}
